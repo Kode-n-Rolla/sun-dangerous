@@ -1,25 +1,25 @@
 import pygame, random, sys
 from pygame.locals import *
 
-"""Игровые константы(размеры, скорость, цвета)"""
-WINDOW_WIDTH = 600 # Ширина
-WINDOW_HEIGHT = 600 # Высота
-TEXT_COLOR = (0, 0, 0) # Цвет текста
-BACKGROUND_COLOR = (255, 255, 255) # Цвет фона
-FPS = 60 # Скорость игры
-PROBLEMS_MIN_SIZE = 10 # Минимальный размер падающих элементов
-PROBLEMS_MAX_SIZE = 40 # Максимальный размер падающих элементов
-PROBLEMS_MIN_SPEED = 1 # Минимальная скорость п.э.
-PROBLEMS_MAX_SPEED = 8 # Максимальная скорость п.э.
-ADD_NEW_PROBLEMS = 6 # Добавление п.э.
-PLAYER_MOVE_RATE = 5 # Кол-во пикселей при одном перемещении игрока
+"""Пame constants(size, speed, colors)"""
+WINDOW_WIDTH = 600 # width
+WINDOW_HEIGHT = 600 # hight
+TEXT_COLOR = (0, 0, 0) # Text color
+BACKGROUND_COLOR = (255, 255, 255) # Background color
+FPS = 60 # Game speed
+PROBLEMS_MIN_SIZE = 10 # Min size falling elements
+PROBLEMS_MAX_SIZE = 40 # Max size falling elements
+PROBLEMS_MIN_SPEED = 1 # Min speed falling elements
+PROBLEMS_MAX_SPEED = 8 # Max speed falling elements
+ADD_NEW_PROBLEMS = 6 # Add falling elements
+PLAYER_MOVE_RATE = 5 # Count of pixels for one move player
 
-"""Функция закрытия игры"""
+"""Game end function"""
 def terminate():
     pygame.quit()
     sys.exit()
 
-"""Функция ожидания нажатия клавиши от игрока"""
+"""Waiting press key from player fucntion"""
 def wait_for_player_press_key():
     while True:
         for event in pygame.event.get():
@@ -30,7 +30,7 @@ def wait_for_player_press_key():
                     terminate()
                 return
 
-"""Функция проверки соприкосновения игрока с падающими элементами"""
+"""Check player with falling elements contact func"""
 def player_touch_problems(player_rect, problems: list) -> bool:
     for p in problems:
         if player_rect.colliderect(p['rect']):
@@ -38,10 +38,10 @@ def player_touch_problems(player_rect, problems: list) -> bool:
     return False
 
 """
-Функция вывода на игровое поле переданную переменную text с параметрами:
-font - шрифт
-surface - объект, на котором будет отображаться текст
-x, y - координаты отображения 
+Output on the field variable text with options:
+font
+surface - pole, which view with text
+x, y - display coordinates
 """
 def draw_text(text: str, font, surface, x: float, y: float):
     text_obj = font.render(text, 1, TEXT_COLOR)
@@ -50,31 +50,31 @@ def draw_text(text: str, font, surface, x: float, y: float):
     surface.blit(text_obj, text_rect)
 
 
-pygame.init() # Запуск игры
-main_clock = pygame.time.Clock() # Контроль скорость игры
-window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))#, pygame.FULLSCREEN)# Отображение игрового поля
-pygame.display.set_caption('So L!fe') # Title игры
-pygame.mouse.set_visible(False) # Видимость курсора мышки
+pygame.init() # Start game
+main_clock = pygame.time.Clock() # Speed game control
+window_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))#, pygame.FULLSCREEN)# Display game field
+pygame.display.set_caption('So L!fe') # Title of the game
+pygame.mouse.set_visible(False) # Mouse cursor visibility
 
-# Настройка шрифтов
+# Font settings
 title_font = pygame.font.SysFont('Courier New', 50, True)
 font = pygame.font.SysFont('Courier New', 30)
 italics_font = pygame.font.SysFont('Times New Roman', 30, False, True)
 instruction_font = pygame.font.SysFont('Courier New', 17)
 
-# Настройка звуков
+# Sounds settings
 game_over_sound = pygame.mixer.Sound('gameover.wav')
 lose_heart = pygame.mixer.Sound('bing.wav')
 pygame.mixer.music.load('background.mid')
 
-# Настройка изображений
+# Image settings
 player_image = pygame.image.load('player.png')
 player_rect = player_image.get_rect()
 problem_image = pygame.image.load('problem.png')
 heart_image = pygame.image.load('heart.png')
 heart_rect = heart_image.get_rect()
 
-# Вывод начального экрана
+# Output start display
 window_surface.fill(BACKGROUND_COLOR)
 draw_text('Sun Dangerous', title_font, window_surface, (WINDOW_WIDTH / 3) - 100, (WINDOW_HEIGHT / 3))
 draw_text('Press any key to start.', italics_font, window_surface, (WINDOW_WIDTH / 5) + 40, (WINDOW_HEIGHT / 3) + 70)
@@ -89,28 +89,28 @@ top_score = 0
 while True:
     problems = []
     score = 0
-    HEARTS = 3 # Переменная кол-ва жизней игрока
-    player_rect.topleft = (WINDOW_WIDTH / 2.2, WINDOW_HEIGHT - 50) # Первоначальное местоположение игрока
-    move_left = move_right = move_up = move_down = False # Переменные перемещения игрока
-    reverse_cheat = slow_cheat = False # Читы обратного движения и замедления п.э.
-    problem_add_count = 0 # Переменная для добавления новых п.э.
-    pygame.mixer.music.play(-1, 0.0) # Начало проигрывания фоновой музыки (-1 повтор, 0.0 - время начала проигрывания)
+    HEARTS = 3 # Counts of lives
+    player_rect.topleft = (WINDOW_WIDTH / 2.2, WINDOW_HEIGHT - 50) # First location of plyer
+    move_left = move_right = move_up = move_down = False # Move player variables
+    reverse_cheat = slow_cheat = False # Cheat codes reverse move falling elements and slow game speed
+    problem_add_count = 0 # Add new falling elements variable
+    pygame.mixer.music.play(-1, 0.0) # Background sound start playing (-1 setting of repeat, 0.0 - start of playing sound)
 
     while True:
         score += 1
 
         for event in pygame.event.get():
-            # Проверка на событие выхода из игры
+            # Check event of game exit
             if event.type == QUIT:
                 terminate()
-            # Проверка события на нажатие клавиши
+            # Check event of keydown
             if event.type == KEYDOWN:
-                # Проверка нажатия z и x для использования чит-кодов
+                # Check keydown cheat codes key (z or x)
                 if event.key == K_z:
                     reverse_cheat = True
                 if event.key == K_x:
                     slow_cheat = True
-                # Нажатие клавиш перемещения
+                # Check event of press move keys
                 if event.key == K_LEFT or event.key == K_a:
                     move_right = False
                     move_left = True
@@ -124,11 +124,11 @@ while True:
                     move_up = False
                     move_down = True
 
-            # Проверка события отжатия клавиш
+            # Check event of keyup
             if event.type == KEYUP:
                 if event.key == K_z:
                     reverse_cheat = False
-                    score = 0 # Результат приравнивается 0, для того, чтобы играть честно
+                    score = 0 # Score = 0 for honest game
                 if event.key == K_x:
                     slow_cheat = False
                     score = 0
@@ -143,17 +143,17 @@ while True:
                 if event.key == K_DOWN or event.key == K_s:
                     move_down = False
 
-            # Проверка события на движение мышки
+            # Check event of mouse move
             if event.type == MOUSEMOTION:
                 player_rect.centerx = event.pos[0]
                 player_rect.centery = event.pos[1]
 
-        # Добавление новых п.э.
+        # Add new falling elements
         if not reverse_cheat and not slow_cheat:
             problem_add_count += 1
         if problem_add_count == ADD_NEW_PROBLEMS:
             problem_add_count = 0
-            # Создание п.э.
+            # Create falling elements
             problem_size = random.randint(PROBLEMS_MIN_SIZE, PROBLEMS_MAX_SIZE)
             new_problem = {'rect': pygame.Rect(
                             random.randint(0, WINDOW_WIDTH-problem_size), 0-problem_size, problem_size, problem_size),
@@ -162,10 +162,10 @@ while True:
                             }
             problems.append(new_problem)
 
-        # Перемещение игрока
+        # Moving player
         if move_left and player_rect.left > 0:
-            # move_ip(5,10) - переместит объект на 5 пикселей вправо и 10 вниз
-            # move_ip(-5,-10) - переместит объект на 5 пикселей влево и 10 вверх
+            # move_ip(5,10) - moved player (5px right and 10px down)
+            # move_ip(-5,-10) - moved player (5px left and 10px up)
             player_rect.move_ip(-1 * PLAYER_MOVE_RATE, 0)
         if move_right and player_rect.right < WINDOW_WIDTH:
             player_rect.move_ip(PLAYER_MOVE_RATE, 0)
@@ -174,7 +174,7 @@ while True:
         if move_down and player_rect.bottom < WINDOW_HEIGHT:
             player_rect.move_ip(0, PLAYER_MOVE_RATE)
 
-        # Перемещение п.э.
+        # Moving falling elements
         for p in problems:
             if not reverse_cheat and not slow_cheat:
                 p['rect'].move_ip(0, p['speed']) # Обычная скорость падения п.э.
@@ -183,33 +183,33 @@ while True:
             elif slow_cheat:
                 p['rect'].move_ip(0, 1) # Замедление п.э.
 
-        # Удаление упавших за предел игрового поля п.э.
+        # Delete falling elements which gone over the edge
         for p in problems[:]:
             if p['rect'].top > WINDOW_HEIGHT:
                 problems.remove(p)
 
-        # Отображение в окне игрового поля
+        # Display game field in a window
         window_surface.fill(BACKGROUND_COLOR)
 
-        # Отображение кол-ва очков, лучшего результата и кол-ва жизней
+        # Display player`s current score, best score and count of lives
         draw_text(f'Score: {score}', font, window_surface, 10, 0)
         draw_text(f'Top score: {top_score}', font, window_surface, 10, 40)
         draw_text(f'-{HEARTS}', font, window_surface, 530, 10)
         heart_rect.topleft = (500, 10)
-        # Отображение спрайта жизней
+        # Display sprite of lives
         window_surface.blit(heart_image, heart_rect)
 
-        # Оторбражение спрайта игрока
+        # Display sprite player
         window_surface.blit(player_image, player_rect)
 
-        # Отображение спрайта каждого п.э.
+        # Display sprite each falling elements
         for p in problems:
             window_surface.blit(p['surface'], p['rect'])
 
-        # Обновление окна
+        # Display update окна
         pygame.display.update()
 
-        # Проверка на столкновение
+        # Check connect
         if player_touch_problems(player_rect, problems):
             HEARTS -= 1 # -1 жизнь
             if HEARTS < 1:
@@ -231,13 +231,13 @@ while True:
             reverse_cheat = slow_cheat = False
             problems = []
 
-        main_clock.tick(FPS) # Приостановка игры для взаимодействия с игроком
+        main_clock.tick(FPS) # Pause for thinhk player
 
-    # Воспроизведения звуков, сигнализирующих окончание игры
+    # Play sound, when game over
     pygame.mixer.music.stop()
     game_over_sound.play()
 
-    # Вывод текста на экран, говорящий о конце игры
+    # Output notification text about game over
     draw_text('GAME OVER!', title_font, window_surface, (WINDOW_WIDTH / 3) - 50, (WINDOW_HEIGHT / 3) + 35)
     draw_text('Press key to start a new game.', font, window_surface, (WINDOW_WIDTH / 3) - 160, (WINDOW_HEIGHT / 3) + 115)
     pygame.display.update()
