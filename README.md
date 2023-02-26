@@ -2,7 +2,7 @@
 
 ``` bash
 git clone 
-python3 sun_dangerous.py
+python3 sun_dangerous.py or python sun_dangerous.py
 ```
 
 You must to dodge of the suns with help arrows keyboard, WASD or move mouse. There is an instructions inside the game.
